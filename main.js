@@ -19,7 +19,7 @@ rl.on('line', (input) => {
     command = input.split(' ');
     if (command[0] == 'login' && ses.status == 'offline') {
         if (command[1]) {
-            ses.init(command[1], ip.address(), mask, port)
+            ses.init(command[1], ip.address(), mask, port);
             ses.connect();
         } else {
             console.log(`Please enter a username after 'login'`);
@@ -32,12 +32,17 @@ rl.on('line', (input) => {
         ses.check();
     } else if (command[0] == 'offline' && ses.status == 'online') {
         ses.offline();
+    } else if (command[0] == 'ses') {
+        console.log(ses);
     }
 });
 
 app.get('/', (req, res) => {
-    ses.save(req.query.message);
+    ses.save(JSON.parse(req.query.message));
+    if (ses.status == 'online') {
+        res.send({ user: this.user, type: 'ping', data: true, time: Date.now() });
+    }
 });
 
 //Start server listening
-app.listen(port, () => console.log(`App is listening on port ${port}`));
+server = app.listen(port, () => console.log(`App is listening on port ${port}`));
